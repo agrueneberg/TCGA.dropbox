@@ -95,6 +95,11 @@
                     });
                 });
             };
+            dropbox.getUserInfo(function (err, userInfo) {
+                $scope.$apply(function () {
+                    $scope.username = userInfo.name;
+                });
+            });
             dropbox.readDir("/", function (err, entries) {
                 $scope.$apply(function () {
                     $scope.items = entries;
@@ -106,7 +111,7 @@
         TCGA.ui.registerTab({
             id: "dropbox",
             title: "Dropbox",
-            content: '<div ng-csp><div class="page-header"><h1>Dropbox</h1></div><div ng-controller="fileList"><ul><li ng-repeat="item in items"><a ng-click="loadFile(item)">{{item}}</a></li></ul></div></div>',
+            content: '<div ng-controller="fileList" ng-csp><div class="page-header"><h1>{{username}}\'s Dropbox</h1></div><ul><li ng-repeat="item in items"><a ng-click="loadFile(item)">{{item}}</a></li></ul></div>',
             switchTab: true
         }, function (err, el) {
          // Bootstrap AngularJS.
