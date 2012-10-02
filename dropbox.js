@@ -17,26 +17,34 @@
         dropbox = angular.module("dropbox", []);
 
         dropbox.factory("dropbox", function ($window) {
-            var dropboxClient, createClient;
+            var dropboxClient, callbackQueue, creating, createClient;
             dropboxClient = null;
+            callbackQueue = [];
+            creating = false;
             createClient = function (callback) {
                 var client;
                 if (dropboxClient !== null) {
                     callback(null, dropboxClient);
                 } else {
-                    client = new $window.Dropbox.Client({
-                        key: "qTVJODLWVyA=|c3a76Q3luVpQrPvdesLUGV0bqkIojZGvyDKna3RWyw==",
-                        sandbox: true
-                    });
-                    client.authDriver(new $window.Dropbox.Drivers.Redirect());
-                    client.authenticate(function (error, client) {
-                        if (error) {
-                            callback(error, null);
-                        } else {
-                            dropboxClient = client;
-                            callback(null, dropboxClient);
-                        }
-                    });
+                    callbackQueue.push(callback);
+                    if (creating === false) {
+                        creating = true;
+                        client = new $window.Dropbox.Client({
+                            key: "qTVJODLWVyA=|c3a76Q3luVpQrPvdesLUGV0bqkIojZGvyDKna3RWyw==",
+                            sandbox: true
+                        });
+                        client.authDriver(new $window.Dropbox.Drivers.Redirect());
+                        client.authenticate(function (error, client) {
+                            if (error) {
+                                callback(error, null);
+                            } else {
+                                dropboxClient = client;
+                                callbackQueue.forEach(function (callback) {
+                                    callback(null, dropboxClient);
+                                });
+                            }
+                        });
+                    }
                 }
             };
             return {
