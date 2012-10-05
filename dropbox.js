@@ -93,7 +93,7 @@
                     var key;
                     key = "dropbox-" + path;
                     TCGA.store.set(key, data, function () {
-                        TCGA.ui.toast.info("File " + path + " was loaded into TCGA.store: " + key);
+                        TCGA.ui.toast.success("File " + path + " was loaded into TCGA.store: " + key);
                     });
                 });
             };
