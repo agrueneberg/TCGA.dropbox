@@ -90,8 +90,10 @@
         dropbox.controller("fileList", function ($scope, $templateCache, dropbox) {
             $scope.loadFile = function (path) {
                 dropbox.readFile(path, function (err, data) {
-                    TCGA.store.set("dropbox-" + path, data, function () {
-                        TCGA.ui.toast.info("File " + path + " was loaded into TCGA.store.");
+                    var key;
+                    key = "dropbox-" + path;
+                    TCGA.store.set(key, data, function () {
+                        TCGA.ui.toast.info("File " + path + " was loaded into TCGA.store: " + key);
                     });
                 });
             };
