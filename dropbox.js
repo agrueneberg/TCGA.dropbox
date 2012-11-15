@@ -11,12 +11,12 @@
         ]
     }, function () {
 
-        var dropbox;
+        var app;
 
      // Define AngularJS module.
-        dropbox = angular.module("dropbox", []);
+        app = angular.module("app", []);
 
-        dropbox.factory("dropbox", function ($window) {
+        app.factory("dropbox", function ($window) {
             var dropboxClient, callbackQueue, creating, createClient;
             dropboxClient = null;
             callbackQueue = [];
@@ -87,7 +87,7 @@
             };
         });
 
-        dropbox.controller("fileList", function ($scope, $templateCache, dropbox) {
+        app.controller("fileList", function ($scope, $templateCache, dropbox) {
             $scope.loadFile = function (path) {
                 dropbox.readFile(path, function (err, data) {
                     var key;
@@ -117,7 +117,7 @@
             switchTab: true
         }, function (err, el) {
          // Bootstrap AngularJS.
-            angular.bootstrap(el, ["dropbox"]);
+            angular.bootstrap(el, ["app"]);
         });
 
     });
