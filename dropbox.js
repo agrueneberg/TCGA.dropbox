@@ -76,7 +76,7 @@
             $scope.loadFile = function (path) {
                 dropbox.readFile(path, function (err, data) {
                     var key;
-                    key = "dropbox-" + path;
+                    key = "dropbox:" + path;
                     TCGA.store.set(key, data, function () {
                         TCGA.ui.toast.success("File " + path + " was loaded into TCGA.store: " + key);
                     });
