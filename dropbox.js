@@ -1,6 +1,7 @@
 (function () {
     "use strict";
 
+    /*jshint jquery:true browser:true */
     /*global TCGA:true, angular:true */
 
     TCGA.loadScript({
@@ -17,71 +18,55 @@
         app = angular.module("app", []);
 
         app.factory("dropbox", function ($window) {
-            var dropboxClient, callbackQueue, creating, createClient;
-            dropboxClient = null;
-            callbackQueue = [];
-            creating = false;
-            createClient = function (callback) {
-                var client;
-                if (dropboxClient !== null) {
-                    callback(null, dropboxClient);
-                } else {
-                    callbackQueue.push(callback);
-                    if (creating === false) {
-                        creating = true;
-                        client = new $window.Dropbox.Client({
-                            key: "qTVJODLWVyA=|c3a76Q3luVpQrPvdesLUGV0bqkIojZGvyDKna3RWyw==",
-                            sandbox: true
-                        });
-                        client.authDriver(new $window.Dropbox.Drivers.Redirect());
-                        client.authenticate(function (error, client) {
-                            if (error) {
-                                callback(error, null);
-                            } else {
-                                dropboxClient = client;
-                                callbackQueue.forEach(function (callback) {
-                                    callback(null, dropboxClient);
-                                });
-                            }
-                        });
-                    }
+            var dropboxClientPromise, createClient;
+            dropboxClientPromise = null;
+            createClient = function () {
+                var deferred, client;
+                if (dropboxClientPromise === null) {
+                    deferred = $.Deferred();
+                    client = new $window.Dropbox.Client({
+                        key: "qTVJODLWVyA=|c3a76Q3luVpQrPvdesLUGV0bqkIojZGvyDKna3RWyw==",
+                        sandbox: true
+                    });
+                    client.authDriver(new $window.Dropbox.Drivers.Redirect());
+                    client.authenticate(function (error, client) {
+                        if (error) {
+                            deferred.reject(error);
+                        } else {
+                            deferred.resolve(client);
+                        }
+                    });
+                    dropboxClientPromise = deferred.promise();
                 }
+                return dropboxClientPromise;
             };
             return {
                 getUserInfo: function (callback) {
-                    createClient(function (err, client) {
-                        if (err !== null) {
-                            callback(err, null);
-                        } else {
-                            client.getUserInfo(callback);
-                        }
+                    createClient().done(function (client) {
+                        client.getUserInfo(callback);
+                    }).fail(function (err) {
+                        callback(err, null);
                     });
                 },
                 readDir: function (path, callback) {
-                    createClient(function (err, client) {
-                        if (err !== null) {
-                            callback(err, null);
-                        } else {
-                            client.readdir(path, callback);
-                        }
+                    createClient().done(function (client) {
+                        client.readdir(path, callback);
+                    }).fail(function (err) {
+                        callback(err, null);
                     });
                 },
                 readFile: function (path, callback) {
-                    createClient(function (err, client) {
-                        if (err !== null) {
-                            callback(err, null);
-                        } else {
-                            client.readFile(path, callback);
-                        }
+                    createClient().done(function (client) {
+                        client.readFile(path, callback);
+                    }).fail(function (err) {
+                        callback(err, null);
                     });
                 },
                 writeFile: function (path, data, callback) {
-                    createClient(function (err, client) {
-                        if (err !== null) {
-                            callback(err, null);
-                        } else {
-                            client.writeFile(name, data, callback);
-                        }
+                    createClient().done(function (client) {
+                        client.writeFile(name, data, callback);
+                    }).fail(function (err) {
+                        callback(err, null);
                     });
                 }
             };
