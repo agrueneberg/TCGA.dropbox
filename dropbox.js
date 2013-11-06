@@ -98,7 +98,7 @@
         TCGA.ui.registerTab({
             id: "dropbox",
             title: "Dropbox",
-            content: '<div ng-controller="fileList" ng-csp><div class="page-header"><h1>{{username}}\'s Dropbox</h1></div><table class="table table-striped"><thead><tr><th>File</th><th>Options</th></tr></thead><tbody><tr ng-repeat="item in items"><td>{{item}}</td><td><button class="btn" ng-click="loadFile(item)"><i class="icon-download"></i>&nbsp;Import</button></td></tr></tbody></table></div>',
+            content: '<div ng-controller="fileList" ng-csp><div class="page-header"><h1>{{username}}\'s Dropbox</h1><p>Author: <a href="mailto:gruene@uab.edu">Alexander Grüneberg</a></p></div><table class="table table-striped"><thead><tr><th>File</th><th>Options</th></tr></thead><tbody><tr ng-repeat="item in items"><td>{{item}}</td><td><button class="btn" ng-click="loadFile(item)"><i class="icon-download"></i>&nbsp;Import</button></td></tr></tbody></table></div>',
             switchTab: true
         }, function (err, el) {
          // Bootstrap AngularJS.
